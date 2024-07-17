@@ -64,4 +64,8 @@ public class SeatService {
 	public SeatVo reserveSeat(List<Object> param) {
 		return dao.reserveSeat(param);
 	}
+
+	public void seatStatusUpdate(List<Object> param) {
+		dao.seatStatusUpdate(param);
+	}
 }

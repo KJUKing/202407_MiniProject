@@ -23,4 +23,5 @@ public class MemberVo {
 	private int price;
 	private String ftc;
 	private String the_name;
+	private int ticket;
 }
