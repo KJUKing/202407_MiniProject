@@ -17,5 +17,4 @@ public enum View {
 	TICKET_BUY,				// 티켓구매창
 	AGE_CHECK,				// 나이체크
 	TICKET_CHECK,			// 선택한 영화별 영화 예매내역 조회
-	
 }

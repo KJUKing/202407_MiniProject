@@ -4,6 +4,7 @@ import java.util.List;
 
 import dao.TicketDao;
 import vo.MemberVo;
+import vo.TicketVo;
 
 public class TicketService {
 	private static TicketService instance;
@@ -22,12 +23,12 @@ public class TicketService {
 
 	public void tkInsert(List<Object> paramTk) {
 		dao.tkInsert(paramTk);
-		
+
 	}
 
 	public void tkInsert1(List<Object> paramTk) {
 		dao.tkInsert1(paramTk);
-		
+
 	}
 
 	public List<MemberVo> ticketCheck(List<Object> param) {
@@ -39,4 +40,11 @@ public class TicketService {
 		return dao.ticketCheckList(param);
 	}
 
+	public void ticketDelete(List<Object> param) {
+		dao.ticketDelete(param);
+	}
+
+	public TicketVo ticketDelBeforeSel(List<Object> param) {
+		return dao.ticketDelBeforeSel(param);
+	}
 }

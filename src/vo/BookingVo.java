@@ -7,4 +7,5 @@ public class BookingVo {
 	private int bk_code;
 	private String fk_sch_code;
 	private String fk_seat_code;
+	private String bk_check_ny;
 }
