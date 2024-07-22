@@ -26,6 +26,12 @@ public class Print {
 	public void spacePrint2() {
 		System.out.print("\t\t\t\t\t\t\t");
 	}
+	public void spacePrint3() {
+		System.out.print("\t\t\t\t\t\t");
+	}
+	public void spacePrint4() {
+		System.out.print("\t\t\t\t\t");
+	}
 	public void printLn(int num) {
 		for(int i = 0; i < num; i++)System.out.println();
 	}
@@ -64,6 +70,8 @@ public class Print {
 		System.out.println("1. 로그인");
 		spacePrint1();
 		System.out.println("2. 회원가입");
+		spacePrint1();
+		System.out.println("3. ID PW 찾기");
 		printLn(2);
 	}
 	public void loginPrint() {
@@ -87,7 +95,9 @@ public class Print {
 		spacePrint1();
 		System.out.println("2. 회원가입");
 		spacePrint1();
-		System.out.println("3. 초기 화면으로");
+		System.out.println("3. ID, PW 찾기");
+		spacePrint1();
+		System.out.println("4. 초기 화면으로");
 		printLn(5);
 	}
 	public void signUpPrint() {
@@ -282,8 +292,7 @@ public class Print {
 	}
 	public void bookingPrint(String movieName, String genre, String rateType, String seat) {
 		printLn(1);
-		var1();
-		printLn(3);
+//		var1();
 		spacePrint1();
 		System.out.println("╭─────────────────────╮");
 		spacePrint1();
@@ -463,6 +472,7 @@ public class Print {
 		printLn(3);
 		DelayUtil.delay(2000);
 	}
+
 	public void signUpPrint1() {
 		printLn(3);
 		spacePrint2();
@@ -472,4 +482,35 @@ public class Print {
 		System.out.println("[  3초 후에 메인 화면으로 이동합니다  ]");
 		DelayUtil.delay(3000);
 	}
+
+	public void masterPagePrint() {
+
+		printLn(1);
+		var1();
+		printLn(3);
+		spacePrint1();
+		System.out.println("[  관리자 페이지  ]");
+		printLn(2);
+		spacePrint1();
+		System.out.println("1. 전체 개인 정보 조회");
+		spacePrint1();
+		System.out.println("2. 전체 예매 내역 조회");
+		spacePrint1();
+		System.out.println("3. 로그아웃");
+		printLn(3);
+	}
+	public void masterMemberAllPrint(String memName,String memId,String memBir,String memNick) {
+
+		spacePrint3();
+		System.out.println(memName+"\t"+memId+"\t"+memBir+"\t"+memNick);
+		var();
+	}
+
+	public void masterTicketAllPrint(String memName, String movieName, String genre, String partType, String rowNum, int seatNum, String runningTime, String theName) {
+		spacePrint4();
+		System.out.println(memName+"\t"+movieName+"\t"+runningTime+"\t"+theName+"\t"+rowNum+seatNum+"\t"+partType+"\t"+genre);
+		var();
+	}
+
+
 }

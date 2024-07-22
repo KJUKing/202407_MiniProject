@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import service.AdminService;
 import service.BookingService;
 import service.MemberService;
 import service.MovieService;
 import service.ScheduleService;
 import service.SeatService;
 import service.TicketService;
+import service.AdminService;
 import util.ScanUtil;
 import view.DelayUtil;
 import view.Print;
@@ -34,7 +36,7 @@ public class MainController extends Print {
    SeatService seatService = SeatService.getInstance();
    MemberService memberService = MemberService.getInstance();
    BookingService bookingService = BookingService.getInstance();
-
+   AdminService adminService = AdminService.getInstance();
 
    TicketService ticketService = TicketService.getInstance();
 
@@ -91,10 +93,73 @@ public class MainController extends Print {
             case TICKET_CHECK:
                view = ticketCheck();
                break;
-
+            case MASERPAGE:
+               view = masterPage();
+               break;
+            case IDPW_SEARCH:
+               view = idPwSearch();
+               break;
+            case ID_SEARCH:
+               view = idSearch();
+               break;
+            case PW_SEARCH:
+               view = pwSearch();
+               break;
             default:
                break;
          }
+      }
+   }
+
+   private View masterPage() {
+      masterPagePrint();
+//   			System.out.println("관리자 페이지");
+//   			System.out.println("1. 전체 개인 정보 조회");
+//   			System.out.println("2. 전체 예매 내역 조회");
+//   			System.out.println("3. 로그아웃");
+      int sel = ScanUtil.menu();
+      printLn(1);
+      var1PrintLn();
+      printLn(1);
+      switch (sel) {
+         case 1: spacePrint3();
+            System.out.println("회원명  \tID  \t생년월일  \t 닉네임  ");
+            var();
+            List<MemberVo> memberList = adminService.memberAllList();
+            for (MemberVo memberVo : memberList) {
+               String memName = memberVo.getMem_name();
+               String memId   = memberVo.getMem_id();
+               String memBir  = memberVo.getMem_bir();
+               String memNick = memberVo.getMem_nick();
+               masterMemberAllPrint(memName, memId, memBir, memNick);
+            }
+            return View.MASERPAGE;
+         case 2: spacePrint4();
+            System.out.println("회원명  \t영화제목\t\t러닝타임 \t\t상영관 \t좌석번호 \t이용가 \t\t장르  ");
+            var();
+            List<MemberVo> ticketList = adminService.ticketAllList();
+            for (MemberVo memberVo : ticketList) {
+               String memName = memberVo.getMem_name();
+               String movieName = memberVo.getMovie_name();
+               String genre = memberVo.getGenre();
+               String partType = memberVo.getPart_type();
+               String rowNum = memberVo.getRow_num();
+               int seatNum = memberVo.getSeat_num();
+               String runningTime = memberVo.getRunning_time();
+               String theName = memberVo.getThe_name();
+               masterTicketAllPrint(memName,movieName,genre,partType,rowNum,seatNum,runningTime,theName);
+            }
+            return View.MASERPAGE;
+         case 3:
+            var1PrintLn();
+            printLn(1);
+            spacePrint1();
+            System.out.println("[  로그아웃 하였습니다  ]");
+            DelayUtil.delay(2000);
+            sessionStorage.clear();
+            return View.MAIN;
+         default:
+            return View.MASERPAGE;
       }
    }
 
@@ -442,7 +507,7 @@ public class MainController extends Print {
          return View.TICKET_BUY;
       }
       if (paySel == 4) {
-         cancelTicket(bookingSel); //티켓 취소 메소드 호출
+         cancelBooking(bookingSel);
          return View.MOVIE_LIST;
       }
 
@@ -510,6 +575,23 @@ public class MainController extends Print {
 
       int bookingSel = (int) sessionStorage.get("bookingSel");
       updateBooking(bookingSel); // 업데이트하는 메소드 *메소드가 너무 길어서 메소드 추출
+      var1();
+      String th = (String) sessionStorage.get("th");
+      List<Object> param1 = new ArrayList<>();
+      param1.add(th);
+      List<SeatVo> seat1 = seatService.seatList(param1);
+      int max = 0;
+      for (SeatVo seatVo : seat1) {
+         max = seatVo.getSeat_max();                                         // 영화관의 좌석수 추출
+      }
+      if (max == 20) {
+         displaySeats(seat1, 5, new String[]{"A","B","C","D"});       // 20좌석의 영화관 예매시
+      } else {
+         displaySeats(seat1, 6, new String[]{"A","B","C","D","E"});   // 30좌석의 영화관 예매시
+      }
+
+
+
       bookingPrint(movieName, genre, rateType, seat);
 //      System.out.println("영화 제목 : " + movieName + "\n장르 : " + genre + " 관람가 : " + rateType);
 //      System.out.println("좌석번호 : " + seat);
@@ -1004,6 +1086,8 @@ public class MainController extends Print {
 
       memberService.signUp(param);
       signUpPrint1();
+
+
       param.clear(); //초기화면으로 복귀시 파라미터 클리어시켜서 나중에 null넣어도 회원가입이 되는것 방지
       return View.MAIN;
    }
@@ -1025,6 +1109,7 @@ public class MainController extends Print {
 
    // 로그인
    private View login() {
+
       loginPrint();
 //      var();
 //      System.out.println("로그인 하십시오");
@@ -1045,6 +1130,7 @@ public class MainController extends Print {
 //         System.out.println("2. 회원가입");
 //         System.out.println("3. 초기 화면으로");
 //         System.out.println();
+
          menuPrint();
          int sel = ScanUtil.menu();
          switch (sel) {
@@ -1056,15 +1142,149 @@ public class MainController extends Print {
             case 3:
                param.clear(); //초기화면으로갈때 로그인시도 파라미터값 삭제
                return View.MAIN;
-            default: return View.LOGIN;
+            default:
+               return View.LOGIN;
          }
       }
+      if (sessionStorage.get("id").equals("admin")) {
+         return View.MASERPAGE;
+      }
+
       View view = null;
       if (sessionStorage.containsKey("view")) {
          view = (View) sessionStorage.get("view");
          return view;
       }
       return View.ADMIN;
+   }
+
+   private View idPwSearch() {
+      printLn(1);
+      var1PrintLn();
+      printLn(3);
+      spacePrint1();
+      System.out.println("1. 아이디 찾기");
+      spacePrint1();
+      System.out.println("2. 비밀번호 변경");
+      spacePrint1();
+      System.out.println("3. 초기 화면");
+      printLn(2);
+      menuPrint();
+      int sel = ScanUtil.menu();
+      switch (sel) {
+         case 1: return View.ID_SEARCH;
+         case 2: return View.PW_SEARCH;
+         case 3: return View.MAIN;
+         default: return View.IDPW_SEARCH;
+      }
+   }
+
+   private View idSearch() {
+      List<Object> param = new ArrayList<>();
+      printLn(1);
+      var1PrintLn();
+      printLn(3);
+      spacePrint2();
+      System.out.println("찾으실 ID의 이름과 생년월일을 기입해주십시오");
+      printLn(1);
+      spacePrint1();
+      String name = ScanUtil.nextLine("이름 : ");
+      spacePrint1();
+      String bir = ScanUtil.nextLine("생년월일 8자리 : ");
+      if (!isValidDate(bir)) {
+         printLn(2);
+         spacePrint2();
+         System.out.println("[  잘못된 생년월일 형식입니다. ex)19990718  ]");
+         DelayUtil.delay(2000);
+         printLn(2);
+         return View.ID_SEARCH;
+      }
+      param.add(name);
+      param.add(bir);
+      boolean idSearch = memberService.idSearch(param);
+      if (!idSearch) {
+         printLn(2);
+         spacePrint2();
+         System.out.println("[  찾으시는 회원님의 계정의 정보가 없습니다  ]");
+         param.clear();
+         DelayUtil.delay(2000);
+         return View.ID_SEARCH;
+      }
+      MemberVo member = (MemberVo) sessionStorage.get("member");
+      printLn(1);
+      spacePrint2();
+      System.out.println("[  찾으시는 회원님의 ID는 = " + member.getMem_id() + "입니다  ]");
+      sessionStorage.clear();
+      DelayUtil.delay(2000);
+      var1PrintLn();
+      printLn(3);
+      spacePrint1();
+      System.out.println("1. 비밀번호 찾기");
+      spacePrint1();
+      System.out.println("2. 초기 화면");
+      printLn(2);
+      menuPrint();
+      int sel1 = ScanUtil.menu();
+      switch (sel1) {
+         case 1:
+            param.clear();
+            return View.PW_SEARCH;
+         case 2:
+            param.clear();
+            return View.MAIN;
+         default: return View.IDPW_SEARCH;
+      }
+   }
+
+   private View pwSearch() {
+      List<Object> param = new ArrayList<>();
+      printLn(1);
+      var1PrintLn();
+      printLn(3);
+      spacePrint2();
+      System.out.println("찾으실 계정의 ID, 이름, 생년월일을 기입해주십시오");
+      printLn(1);
+      spacePrint1();
+      String id = ScanUtil.nextLine("ID : ");
+      spacePrint1();
+      String name = ScanUtil.nextLine("이름 : ");
+      spacePrint1();
+      String bir = ScanUtil.nextLine("생년월일 8자리 : ");
+      if (!isValidDate(bir)) {
+         printLn(2);
+         spacePrint2();
+         System.out.println("[  잘못된 생년월일 형식입니다. ex)19990718  ]");
+         DelayUtil.delay(2000);
+         printLn(2);
+         return View.PW_SEARCH;
+      }
+      param.add(id);
+      param.add(name);
+      param.add(bir);
+      boolean pwSearch = memberService.pwSearch(param);
+      if (!pwSearch) {
+         printLn(2);
+         spacePrint2();
+         System.out.println("[  찾으시는 회원님의 계정의 정보가 없습니다  ]");
+         DelayUtil.delay(2000);
+         param.clear();
+         return View.PW_SEARCH;
+      }
+      param.clear(); //파라미터 초기화
+      MemberVo member = (MemberVo) sessionStorage.get("member");
+      printLn(2);
+      spacePrint2();
+      String pw = ScanUtil.nextLine("새로운 비밀번호를 입력해주십시오 : ");
+      param.add(pw); // 수정된 pw값
+      param.add(member.getMem_no());
+      int sel = 2; //비밀번호 바꾸는 번호는 2번
+      memberService.memberUpdate(param, sel);
+      printLn(2);
+      spacePrint2();
+      System.out.println("[  비밀번호가 변경되었습니다 초기화면으로 이동합니다  ]");
+      printLn(3);
+      DelayUtil.delay(2000);
+      return View.MAIN;
    }
 
    public View main() {
@@ -1085,6 +1305,8 @@ public class MainController extends Print {
             return View.LOGIN;
          case 2:
             return View.SIGN_UP;
+         case 3:
+            return View.IDPW_SEARCH;
          default:
             return View.MAIN;
       }

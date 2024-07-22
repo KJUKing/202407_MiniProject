@@ -49,12 +49,12 @@ public class MemberService {
         dao.memberDelete(param);
     }
 
-	public MemberVo ageCheck(List<Object> param) {
-		return dao.ageCheck(param);
-		
-	}
-	
-	 // 로그인검증용 전체 id정보 파라미터 갖고오기
+    public MemberVo ageCheck(List<Object> param) {
+        return dao.ageCheck(param);
+
+    }
+
+    // 로그인검증용 전체 id정보 파라미터 갖고오기
     public void idInfo() {
         List<MemberVo> idInfo = dao.idInfo();
         List<String> memIdList = new ArrayList<>();
@@ -65,5 +65,17 @@ public class MemberService {
         }
         MainController.sessionStorage.put("idInfo", memIdList);
     }
+    public boolean idSearch(List<Object> param) {
+        MemberVo member = dao.idSearch(param);
+        if (member ==null) return false;
+        MainController.sessionStorage.put("member", member);
+        return true;
+    }
 
+    public boolean pwSearch(List<Object> param) {
+        MemberVo member = dao.pwSearch(param);
+        if (member ==null) return false;
+        MainController.sessionStorage.put("member", member);
+        return true;
+    }
 }

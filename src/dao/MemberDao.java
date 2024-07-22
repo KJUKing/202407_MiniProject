@@ -1,11 +1,9 @@
 package dao;
 
 import util.JDBCUtil;
-import vo.MovieVo;
 import vo.MemberVo;
 
 import java.util.List;
-import java.util.Map;
 
 public class MemberDao {
 
@@ -103,5 +101,24 @@ public class MemberDao {
         //그러므로 DELYN = 'N' 값만 찾는게아니라 전체조회를 실시
         return jdbc.selectList(sql, MemberVo.class);
     }
+    public MemberVo idSearch(List<Object> param) {
+        String sql = "SELECT MEM_ID\n" +
+                "FROM MEMBER\n" +
+                "WHERE MEM_NAME = ?\n" +
+                "AND MEM_BIR = ?\n" +
+                "AND DELYN = 'N'";
 
+        return jdbc.selectOne(sql, param, MemberVo.class);
+    }
+
+    public MemberVo pwSearch(List<Object> param) {
+        String sql = "SELECT MEM_NO, MEM_PASS\n" +
+                "FROM MEMBER\n" +
+                "WHERE MEM_ID = ?\n" +
+                "AND MEM_NAME = ?\n" +
+                "AND MEM_BIR = ?\n" +
+                "AND DELYN = 'N'";
+
+        return jdbc.selectOne(sql, param, MemberVo.class);
+    }
 }

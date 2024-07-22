@@ -17,4 +17,8 @@ public enum View {
 	TICKET_BUY,				// 티켓구매창
 	AGE_CHECK,				// 나이체크
 	TICKET_CHECK,			// 선택한 영화별 영화 예매내역 조회
+	MASERPAGE,				// 관리자페이지
+	IDPW_SEARCH,			// 잃어버린 ID PW 찾기
+	PW_SEARCH,				// PW 찾기
+	ID_SEARCH,				// ID 찾기
 }
